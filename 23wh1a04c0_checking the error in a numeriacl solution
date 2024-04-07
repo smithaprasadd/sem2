@@ -1,0 +1,49 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define the ODE: y' = f(t, y)
+def f(t, y):
+    return t - y
+
+# Analytical solution of the ODE
+def analytical_solution(t):
+    return t - 1 + 2 * np.exp(-t)
+
+# Euler method for solving the ODE
+def euler_method(f, t0, y0, t_end, h):
+    num_steps = int((t_end - t0) / h)
+    t_values = np.linspace(t0, t_end, num_steps + 1)
+    y_values = np.zeros(num_steps + 1)
+    y_values[0] = y0
+
+    for i in range(num_steps):
+        y_values[i + 1] = y_values[i] + h * f(t_values[i], y_values[i])
+
+    return t_values, y_values
+
+# Define the parameters
+t0 = 0     # Initial time
+t_end = 2  # End time
+y0 = 1     # Initial condition
+h = 0.1    # Step size
+
+# Numerically solve the ODE using Euler's method
+t_numerical, y_numerical = euler_method(f, t0, y0, t_end, h)
+
+# Compute the analytical solution
+y_analytical = analytical_solution(t_numerical)
+
+# Plotting the numerical and analytical solutions
+plt.plot(t_numerical, y_numerical, label='Numerical Solution (Euler)')
+plt.plot(t_numerical, y_analytical, label='Analytical Solution', linestyle='--')
+plt.xlabel('t')
+plt.ylabel('y(t)')
+plt.title('Numerical vs Analytical Solution of the ODE')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Calculate and print the error
+error = np.abs(y_numerical - y_analytical)
+max_error = np.max(error)
+print("Maximum Error:", max_error)
